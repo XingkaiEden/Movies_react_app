@@ -2,10 +2,12 @@ import React, { Component } from "react";
 import Movie from "./movie";
 import { getMovies } from "../services/fakeMovieService";
 import Pagination from "./pagination";
+import { paginate } from "../utils/pagination";
 
 class Movies extends Component {
   state = {
     movies: getMovies(),
+    currentPage: 1,
     pageSize: 4
   };
   handleDelete = movie => {
@@ -20,10 +22,16 @@ class Movies extends Component {
     this.setState({ movies });
   };
   handlePageChange = page => {
-    console.log(page);
+    this.setState({ currentPage: page });
   };
   render() {
-    const { length: count } = this.state.movies;
+    const {
+      pageSize,
+      currentPage,
+      movies,
+      movies: { length: count }
+    } = this.state; //nested Destructuring
+    const currPageOfMvoie = paginate(movies, currentPage, pageSize);
     if (count === 0)
       return (
         <p className="text-capitalize">There are no movies in the database</p>
@@ -45,21 +53,24 @@ class Movies extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.movies.map(movie => (
+            {currPageOfMvoie.map(movie => (
               <Movie
+                key={movie._id}
                 movie={movie}
                 onDelete={() => this.handleDelete(movie)}
                 onLiked={() => this.handleLike(movie)}
-                key={movie._id}
               />
             ))}
           </tbody>
         </table>
-        <Pagination
-          itemsCount={count}
-          pageSize={this.state.pageSize}
-          onPageChange={this.handlePageChange}
-        />
+        <div className="text-center">
+          <Pagination
+            itemsCount={count}
+            pageSize={pageSize}
+            currentPage={currentPage}
+            onPageChange={this.handlePageChange}
+          />
+        </div>
       </div>
     );
   }

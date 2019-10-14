@@ -28,21 +28,23 @@
 import React from "react";
 
 const Pagination = props => {
-  const { itemsCount, onPageChange, pageSize } = props;
+  const { itemsCount, onPageChange, currentPage, pageSize } = props;
+  // console.log(currentPage); debug purpose
   const NumberOfPage = itemsCount / pageSize;
+  if (NumberOfPage < 1) return null;
   let pageNumber = [];
-  for (let i = 1; i <= NumberOfPage + 1; i++) {
+  for (let i = 1; i <= Math.ceil(NumberOfPage); i++) {
     pageNumber.push(i);
   }
-  console.log(pageNumber);
-  console.log(pageSize);
-  console.log(itemsCount);
-  console.log(NumberOfPage);
+
   return (
     <nav>
       <ul className="pagination">
         {pageNumber.map(page => (
-          <li key={page} className="page-item">
+          <li
+            key={page}
+            className={page === currentPage ? "page-item active" : "page-item"}
+          >
             <a className="page-link" onClick={() => onPageChange(page)}>
               {page}
             </a>
