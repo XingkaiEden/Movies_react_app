@@ -10,6 +10,13 @@ class Movies extends Component {
     const movies = this.state.movies.filter(m => m._id !== movie._id);
     this.setState({ movies });
   };
+  handleLike = movie => {
+    const movies = [...this.state.movies];
+    const index = movies.indexOf(movie);
+    // movies[index] = { ...movies[index] };
+    movies[index].like = !movies[index].like;
+    this.setState({ movies });
+  };
   render() {
     const { length: count } = this.state.movies;
     if (count === 0)
@@ -29,13 +36,15 @@ class Movies extends Component {
               <th>Stock</th>
               <th>Rate</th>
               <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             {this.state.movies.map(movie => (
               <Movie
                 movie={movie}
-                onDelete={this.handleDelete}
+                onDelete={() => this.handleDelete(movie)}
+                onLiked={() => this.handleLike(movie)}
                 key={movie._id}
               />
             ))}
