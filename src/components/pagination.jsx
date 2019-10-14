@@ -28,19 +28,24 @@
 import React from "react";
 
 const Pagination = props => {
-  const { itemCount, onPageChange, pageSize } = props;
-  const NumberOfPage = itemCount / pageSize;
+  const { itemsCount, onPageChange, pageSize } = props;
+  const NumberOfPage = itemsCount / pageSize;
   let pageNumber = [];
-  for (let i = 1; i <= NumberOfPage; i++) {
+  for (let i = 1; i <= NumberOfPage + 1; i++) {
     pageNumber.push(i);
   }
   console.log(pageNumber);
+  console.log(pageSize);
+  console.log(itemsCount);
+  console.log(NumberOfPage);
   return (
     <nav>
       <ul className="pagination">
         {pageNumber.map(page => (
-          <li className="page-item">
-            <a className="page-link">{page}</a>
+          <li key={page} className="page-item">
+            <a className="page-link" onClick={() => onPageChange(page)}>
+              {page}
+            </a>
           </li>
         ))}
       </ul>
