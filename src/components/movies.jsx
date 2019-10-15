@@ -16,8 +16,9 @@ class Movies extends Component {
 
         pageSize: 4
     };
-    componentDidMount() {
-        this.setState({ movies: getMovies(), genre: getGenres() });
+    componentDidMount() { //import data from server
+
+        this.setState({ movies: getMovies(), genre: [{ name: "All Genre" }, ...getGenres()] });
     }
     handleDelete = movie => {
         const movies = this.state.movies.filter(m => m._id !== movie._id);
@@ -35,7 +36,7 @@ class Movies extends Component {
     };
     handleChangeGenre = item => {
 
-        this.setState({ selectedItem: item });
+        this.setState({ selectedItem: item, currentPage: 1 });
         // console.log(item)
     }
     render() {
@@ -48,8 +49,12 @@ class Movies extends Component {
 
             movies: { length: count }
         } = this.state; //nested Destructuring
-        const filtered = selectedItem ? movies.filter(m => m.genre._id === selectedItem._id) : movies;
+
+
+        const filtered = selectedItem && selectedItem._id ? movies.filter(m => m.genre._id === selectedItem._id) : movies;
         const currPageOfMvoie = paginate(filtered, currentPage, pageSize);
+
+
         if (count === 0)
             return (
                 <p className="text-capitalize">There are no movies in the database</p>
@@ -66,7 +71,7 @@ class Movies extends Component {
                             onChangeGenre={item => this.handleChangeGenre(item)} />
                     </div>
                     <div className="col">
-                        <p className="text-capitalize">there are {count} movies in the database</p>
+                        <p className="text-capitalize">there are {filtered.length} movies in the database</p>
                         <table className=" table">
                             <thead>
                                 <tr>
