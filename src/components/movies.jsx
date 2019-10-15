@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import Movie from "./movie";
 import { getMovies } from "../services/fakeMovieService";
-import Pagination from "./pagination";
+import Pagination from "./common/pagination";
 import { paginate } from "../utils/pagination";
-import ListGroup from "./listGroup"
+import ListGroup from "./common/listGroup"
 import { getGenres } from "../services/fakeGenreService";
+import MovieTable from "./movieTable";
 
 class Movies extends Component {
     state = {
@@ -12,8 +12,7 @@ class Movies extends Component {
         genre: [],  // we use an empty array becasue of the delay between componentDidMount and state. 
         //we don't want undefined during data transfer, so an empty array is apply
         currentPage: 1,
-
-
+        selectedItem: "All Genre",
         pageSize: 4
     };
     componentDidMount() { //import data from server
@@ -72,28 +71,12 @@ class Movies extends Component {
                     </div>
                     <div className="col">
                         <p className="text-capitalize">there are {filtered.length} movies in the database</p>
-                        <table className=" table">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Genre</th>
-                                    <th>Stock</th>
-                                    <th>Rate</th>
-                                    <th></th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {currPageOfMvoie.map(movie => (
-                                    <Movie
-                                        key={movie._id}
-                                        movie={movie}
-                                        onDelete={movie => this.handleDelete(movie)}
-                                        onLiked={movie => this.handleLike(movie)}
-                                    />
-                                ))}
-                            </tbody>
-                        </table>
+                        <MovieTable
+
+                            onDelete={movie => this.handleDelete(movie)}
+                            onLiked={movie => this.handleLike(movie)}
+                            currPageOfMvoie={currPageOfMvoie}
+                        />
                         <div className="text-center">
                             <Pagination
                                 itemsCount={filtered.length}
