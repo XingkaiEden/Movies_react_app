@@ -39,17 +39,8 @@ class Movies extends Component {
         this.setState({ selectedItem: item, currentPage: 1 });
         // console.log(item)
     }
-    handleSort = item => {
-        const sortColumn = { ...this.state.sortColumn };
-        if (sortColumn.selectedTitle === item) {
-            if (sortColumn.order === "asc")
-                sortColumn.order = "desc";
-            else
-                sortColumn.order = "asc";
-        } else {
-            sortColumn.order = "asc";
-            sortColumn.selectedTitle = item;
-        }
+    handleSort = sortColumn => {
+
         console.log(sortColumn)
         this.setState({ sortColumn })
     }
@@ -60,6 +51,7 @@ class Movies extends Component {
             movies,
             genre,
             selectedItem,
+            sortColumn,
             sortColumn: { selectedTitle, order },
 
             movies: { length: count }
@@ -94,6 +86,7 @@ class Movies extends Component {
                             onDelete={movie => this.handleDelete(movie)}
                             onLiked={movie => this.handleLike(movie)}
                             currPageOfMvoie={currPageOfMvoie}
+                            sortColumn={sortColumn}
                             onSort={item => this.handleSort(item)}
                         />
                         <div className="text-center">
