@@ -2,14 +2,14 @@ import React from 'react';
 import Movie from "./common/movie";
 
 const MovieTable = (props) => {
-    const { onDelete, onLiked, currPageOfMvoie } = props;
+    const { onDelete, onLiked, currPageOfMvoie, onSort } = props;
     return (<table className=" table">
         <thead>
             <tr>
-                <th>Title</th>
-                <th>Genre</th>
-                <th>Stock</th>
-                <th>Rate</th>
+                <th style={{ cursor: "pointer" }} onClick={() => onSort("title")}>Title</th>
+                <th onClick={() => onSort("genre")} style={{ cursor: "pointer" }}>Genre</th>
+                <th onClick={() => onSort("numberInStock")} style={{ cursor: "pointer" }}>Stock</th>
+                <th onClick={() => onSort("dailyRentalRate")} style={{ cursor: "pointer" }}>Rate</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -24,7 +24,7 @@ const MovieTable = (props) => {
                 />
             ))}
         </tbody>
-    </table>);
+    </table >);
 }
 
 export default MovieTable;

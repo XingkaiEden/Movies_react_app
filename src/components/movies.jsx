@@ -5,6 +5,7 @@ import { paginate } from "../utils/pagination";
 import ListGroup from "./common/listGroup"
 import { getGenres } from "../services/fakeGenreService";
 import MovieTable from "./movieTable";
+import _ from 'lodash';
 
 class Movies extends Component {
     state = {
@@ -12,12 +13,12 @@ class Movies extends Component {
         genre: [],  // we use an empty array becasue of the delay between componentDidMount and state. 
         //we don't want undefined during data transfer, so an empty array is apply
         currentPage: 1,
-        selectedItem: "All Genre",
+        sortColumn: { selectedTitle: "title", order: "asc" },
         pageSize: 4
     };
     componentDidMount() { //import data from server
 
-        this.setState({ movies: getMovies(), genre: [{ name: "All Genre" }, ...getGenres()] });
+        this.setState({ movies: getMovies(), genre: [{ _id: "", name: "All Genre" }, ...getGenres()] }); //if you don't put _id there, unique key will have problems in listGroup
     }
     handleDelete = movie => {
         const movies = this.state.movies.filter(m => m._id !== movie._id);
@@ -38,6 +39,20 @@ class Movies extends Component {
         this.setState({ selectedItem: item, currentPage: 1 });
         // console.log(item)
     }
+    handleSort = item => {
+        const sortColumn = { ...this.state.sortColumn };
+        if (sortColumn.selectedTitle === item) {
+            if (sortColumn.order === "asc")
+                sortColumn.order = "desc";
+            else
+                sortColumn.order = "asc";
+        } else {
+            sortColumn.order = "asc";
+            sortColumn.selectedTitle = item;
+        }
+        console.log(sortColumn)
+        this.setState({ sortColumn })
+    }
     render() {
         const {
             pageSize,
@@ -45,13 +60,15 @@ class Movies extends Component {
             movies,
             genre,
             selectedItem,
+            sortColumn: { selectedTitle, order },
 
             movies: { length: count }
         } = this.state; //nested Destructuring
 
 
         const filtered = selectedItem && selectedItem._id ? movies.filter(m => m.genre._id === selectedItem._id) : movies;
-        const currPageOfMvoie = paginate(filtered, currentPage, pageSize);
+        const sorted = _.orderBy(filtered, [selectedTitle], order);
+        const currPageOfMvoie = paginate(sorted, currentPage, pageSize);
 
 
         if (count === 0)
@@ -67,7 +84,8 @@ class Movies extends Component {
                             // textProperty="name" //but there are too many interfaces here, we can encapsulate them into defaultProperty
                             items={genre}
                             selectedItem={selectedItem}
-                            onChangeGenre={item => this.handleChangeGenre(item)} />
+                            onChangeGenre={item => this.handleChangeGenre(item)}
+                        />
                     </div>
                     <div className="col">
                         <p className="text-capitalize">there are {filtered.length} movies in the database</p>
@@ -76,6 +94,7 @@ class Movies extends Component {
                             onDelete={movie => this.handleDelete(movie)}
                             onLiked={movie => this.handleLike(movie)}
                             currPageOfMvoie={currPageOfMvoie}
+                            onSort={item => this.handleSort(item)}
                         />
                         <div className="text-center">
                             <Pagination
