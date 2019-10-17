@@ -2,8 +2,8 @@ import React from 'react';
 
 
 
-const ListGroup = (props) => {
-    const { items, valueProperty, textProperty, selectedItem, onChangeGenre } = props;
+const ListGroup = ({ items, valueProperty, textProperty, selectedItem, onChangeGenre }) => {
+
     // valueProperty and textProperty make ListGroup component resuable for any other components
 
     return (

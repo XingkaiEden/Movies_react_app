@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 
 class Likes extends Component {
-  state = {};
   render() {
-    const { movie, onLiked } = this.props;
+    const { item, onLiked } = this.props;
     let classes = "fa fa-heart";
-    if (!movie.like) classes += "-o";
+    if (!item.like) classes += "-o";
     return (
       <i
-        onClick={() => onLiked(movie)}
+        onClick={() => onLiked(item)}
         style={{ cursor: "pointer" }}
         className={classes}
         aria-hidden="true"

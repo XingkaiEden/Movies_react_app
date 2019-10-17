@@ -27,8 +27,7 @@
 
 import React from "react";
 
-const Pagination = props => {
-  const { itemsCount, onPageChange, currentPage, pageSize } = props;
+const Pagination = ({ itemsCount, onPageChange, currentPage, pageSize }) => {
   // console.log(currentPage); debug purpose
   const NumberOfPage = itemsCount / pageSize;
   if (NumberOfPage < 1) return null;

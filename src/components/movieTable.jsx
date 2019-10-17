@@ -1,46 +1,37 @@
 import React, { Component } from 'react';
-import Movie from "./common/movie";
+
+
+import Likes from './common/likes';
+import Table from './common/tabel';
+
 
 
 class MovieTable extends Component {
-    handleSort = item => {
-        const sortColumn = { ...this.props.sortColumn };
-        if (sortColumn.selectedTitle === item) {
-            if (sortColumn.order === "asc")
-                sortColumn.order = "desc";
-            else
-                sortColumn.order = "asc";
-        } else {
-            sortColumn.order = "asc";
-            sortColumn.selectedTitle = item;
-        }
-        this.props.onSort(sortColumn);
-    }
+    columns = [
+        { path: "title", label: "Title" },
+        { path: "genre", label: "Genre" },
+        { path: "numberInStock", label: "Stock" },
+        { path: "dailyRentalRate", label: "Rate" },
+        { key: "like", content: item => <Likes onLiked={this.props.onLiked} item={item} /> },
+        {
+            key: "delete", content: item => <button
+                className="btn btn-danger btn-sm"
+                onClick={() => this.props.onDelete(item)}
+            >
+                Delete
+      </button>
+        },
+    ]
     render() {
-        const { onDelete, onLiked, currPageOfMvoie } = this.props;
+        const { currPageOfMvoie, onSort, sortColumn } = this.props;
         return (
-            <table className=" table">
-                <thead>
-                    <tr>
-                        <th style={{ cursor: "pointer" }} onClick={() => this.handleSort("title")}>Title</th>
-                        <th onClick={() => this.handleSort("genre")} style={{ cursor: "pointer" }}>Genre</th>
-                        <th onClick={() => this.handleSort("numberInStock")} style={{ cursor: "pointer" }}>Stock</th>
-                        <th onClick={() => this.handleSort("dailyRentalRate")} style={{ cursor: "pointer" }}>Rate</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {currPageOfMvoie.map(movie => (
-                        <Movie
-                            key={movie._id}
-                            movie={movie}
-                            onDelete={movie => onDelete(movie)}
-                            onLiked={movie => onLiked(movie)}
-                        />
-                    ))}
-                </tbody>
-            </table >);
+            <Table
+                data={currPageOfMvoie}
+                onSort={onSort}
+                sortColumn={sortColumn}
+                columns={this.columns}
+            />
+        );
     }
 
 
