@@ -1,24 +1,32 @@
-import React from 'react';
+import React from "react";
 
+const ListGroup = ({
+  items,
+  textProperty,
+  valueProperty,
+  selectedItem,
+  onItemSelect
+}) => {
+  return (
+    <ul className="list-group">
+      {items.map(item => (
+        <li
+          onClick={() => onItemSelect(item)}
+          key={item[valueProperty]}
+          className={
+            item === selectedItem ? "list-group-item active" : "list-group-item"
+          }
+        >
+          {item[textProperty]}
+        </li>
+      ))}
+    </ul>
+  );
+};
 
-
-const ListGroup = ({ items, valueProperty, textProperty, selectedItem, onChangeGenre }) => {
-
-    // valueProperty and textProperty make ListGroup component resuable for any other components
-
-    return (
-        <ul className="list-group">
-            {
-                items.map(item =>
-                    <li
-                        key={item[valueProperty]}
-                        onClick={() => onChangeGenre(item)}
-                        style={{ cursor: "pointer" }}
-                        className={selectedItem === item ? "list-group-item active" : "list-group-item"}>{item[textProperty]}</li>
-                )
-            }
-        </ul>
-    )
-}
+ListGroup.defaultProps = {
+  textProperty: "name",
+  valueProperty: "_id"
+};
 
 export default ListGroup;

@@ -1,110 +1,109 @@
 import React, { Component } from "react";
-import { getMovies } from "../services/fakeMovieService";
+import MoviesTable from "./moviesTable";
+import ListGroup from "./common/listGroup";
 import Pagination from "./common/pagination";
-import { paginate } from "../utils/pagination";
-import ListGroup from "./common/listGroup"
+import { getMovies } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
-import MovieTable from "./movieTable";
-import _ from 'lodash';
+import { paginate } from "../utils/paginate";
+import _ from "lodash";
 
 class Movies extends Component {
-    state = {
-        movies: [],
-        genre: [],  // we use an empty array becasue of the delay between componentDidMount and state. 
-        //we don't want undefined during data transfer, so an empty array is apply
-        currentPage: 1,
-        sortColumn: { selectedTitle: "title", order: "asc" },
-        pageSize: 4
-    };
-    componentDidMount() { //import data from server
+  state = {
+    movies: [],
+    genres: [],
+    currentPage: 1,
+    pageSize: 4,
+    sortColumn: { path: "title", order: "asc" }
+  };
 
-        this.setState({ movies: getMovies(), genre: [{ _id: "", name: "All Genre" }, ...getGenres()] }); //if you don't put _id there, unique key will have problems in listGroup
-    }
-    handleDelete = movie => {
-        const movies = this.state.movies.filter(m => m._id !== movie._id);
-        this.setState({ movies });
-    };
-    handleLike = movie => {
-        const movies = [...this.state.movies];
-        const index = movies.indexOf(movie);
-        // movies[index] = { ...movies[index] };
-        movies[index].like = !movies[index].like;
-        this.setState({ movies });
-    };
-    handlePageChange = page => {
-        this.setState({ currentPage: page });
-    };
-    handleChangeGenre = item => {
+  componentDidMount() {
+    const genres = [{ _id: "", name: "All Genres" }, ...getGenres()];
 
-        this.setState({ selectedItem: item, currentPage: 1 });
-        // console.log(item)
-    }
-    handleSort = sortColumn => {
+    this.setState({ movies: getMovies(), genres });
+  }
 
-        console.log(sortColumn)
-        this.setState({ sortColumn })
-    }
-    render() {
-        const {
-            pageSize,
-            currentPage,
-            movies,
-            genre,
-            selectedItem,
-            sortColumn,
-            sortColumn: { selectedTitle, order },
+  handleDelete = movie => {
+    const movies = this.state.movies.filter(m => m._id !== movie._id);
+    this.setState({ movies });
+  };
 
-            movies: { length: count }
-        } = this.state; //nested Destructuring
+  handleLike = movie => {
+    const movies = [...this.state.movies];
+    const index = movies.indexOf(movie);
+    movies[index] = { ...movies[index] };
+    movies[index].liked = !movies[index].liked;
+    this.setState({ movies });
+  };
 
+  handlePageChange = page => {
+    this.setState({ currentPage: page });
+  };
 
-        const filtered = selectedItem && selectedItem._id ? movies.filter(m => m.genre._id === selectedItem._id) : movies;
-        const sorted = _.orderBy(filtered, [selectedTitle], order);
-        const currPageOfMvoie = paginate(sorted, currentPage, pageSize);
+  handleGenreSelect = genre => {
+    this.setState({ selectedGenre: genre, currentPage: 1 });
+  };
 
+  handleSort = sortColumn => {
+    this.setState({ sortColumn });
+  };
 
-        if (count === 0)
-            return (
-                <p className="text-capitalize">There are no movies in the database</p>
-            );
-        return (
-            <div className="container-fluid">
-                <div className="row">
-                    <div className="col-2">
-                        <ListGroup
-                            // valueProperty="_id" //it makes <ListGroup/> reusable not only for Genre, but any other
-                            // textProperty="name" //but there are too many interfaces here, we can encapsulate them into defaultProperty
-                            items={genre}
-                            selectedItem={selectedItem}
-                            onChangeGenre={item => this.handleChangeGenre(item)}
-                        />
-                    </div>
-                    <div className="col">
-                        <p className="text-capitalize">there are {filtered.length} movies in the database</p>
-                        <MovieTable
+  getPagedData = () => {
+    const {
+      pageSize,
+      currentPage,
+      sortColumn,
+      selectedGenre,
+      movies: allMovies
+    } = this.state;
 
-                            onDelete={movie => this.handleDelete(movie)}
-                            onLiked={movie => this.handleLike(movie)}
-                            currPageOfMvoie={currPageOfMvoie}
-                            sortColumn={sortColumn}
-                            onSort={item => this.handleSort(item)}
-                        />
-                        <div className="text-center">
-                            <Pagination
-                                itemsCount={filtered.length}
-                                pageSize={pageSize}
-                                currentPage={currentPage}
-                                onPageChange={this.handlePageChange}
-                            />
-                        </div></div>
+    const filtered =
+      selectedGenre && selectedGenre._id
+        ? allMovies.filter(m => m.genre._id === selectedGenre._id)
+        : allMovies;
 
-                </div>
-            </div>
-        );
-    }
+    const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
+
+    const movies = paginate(sorted, currentPage, pageSize);
+
+    return { totalCount: filtered.length, data: movies };
+  };
+
+  render() {
+    const { length: count } = this.state.movies;
+    const { pageSize, currentPage, sortColumn } = this.state;
+
+    if (count === 0) return <p>There are no movies in the database.</p>;
+
+    const { totalCount, data: movies } = this.getPagedData();
+
+    return (
+      <div className="row">
+        <div className="col-3">
+          <ListGroup
+            items={this.state.genres}
+            selectedItem={this.state.selectedGenre}
+            onItemSelect={this.handleGenreSelect}
+          />
+        </div>
+        <div className="col">
+          <p>Showing {totalCount} movies in the database.</p>
+          <MoviesTable
+            movies={movies}
+            sortColumn={sortColumn}
+            onLike={this.handleLike}
+            onDelete={this.handleDelete}
+            onSort={this.handleSort}
+          />
+          <Pagination
+            itemsCount={totalCount}
+            pageSize={pageSize}
+            currentPage={currentPage}
+            onPageChange={this.handlePageChange}
+          />
+        </div>
+      </div>
+    );
+  }
 }
-ListGroup.defaultProps = {
-    textProperty: "name",
-    valueProperty: "_id"
-}
+
 export default Movies;
