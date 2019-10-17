@@ -1,6 +1,7 @@
 import React from 'react';
-import { Link } from "react-router-dom";
-
+import { Link, NavLink } from "react-router-dom";
+//NavLink is just a container of Link, it has a "avtiveClassName". 
+// when the path match, it will automatically light up!!!
 const NavBar = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -11,13 +12,13 @@ const NavBar = () => {
             <div className="collapse navbar-collapse" id="navbarNav">
                 <ul className="navbar-nav">
                     <li className="nav-item">
-                        <Link className="nav-link" to="/movies">Movies <span className="sr-only">(current)</span></Link>
+                        <NavLink className="nav-link" to="/movies">Movies <span className="sr-only">(current)</span></NavLink>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="/customers">Customers</Link>
+                        <NavLink className="nav-link" to="/customers">Customers</NavLink>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="/rentals">Rentals</Link>
+                        <NavLink className="nav-link" to="/rentals">Rentals</NavLink>
                     </li>
                 </ul>
             </div>
