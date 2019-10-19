@@ -1,19 +1,30 @@
 import React, { Component } from 'react';
 import Input from './input';
+import joi from 'joi-browser';
 
 class LoginForm extends Component {
     state = {
         account: { username: "", password: "" },
         error: {}
     }
+    schema = {
+        username: joi.string().required().label("Username"),
+        password: joi.string().required().label("Password")
+    }
     validate = () => {
-        const error = {};
-        const { account } = this.state;
-        if (account.username.trim() === "") // .trim() is used to remove space from both ends of string
-            error.username = "Username is required";
-        if (account.password.trim() === "")// beacuse we don't want "     " become input
-            error.password = "Password is reuqired";
-        return Object.keys(error).length === 0 ? null : error; // determine if error occur
+        const option = { abortEarly: false };
+        const result = joi.validate(this.state.account, this.schema, option);
+        // joi.validate([object we want to validate], [validation schema],{abortEarly})
+        if (!result.error) return null; //if no error, return null
+
+        const error = {}; // set error object in state
+        //iterate the "details" array to get output
+        result.error.details.map(item =>
+            error[item.path[0]] = item.message
+            //item.path[0] gives the property name of error, and item.message gives the error message
+        );
+
+        return error;
 
     }
     handleSubmit = e => {
@@ -38,8 +49,8 @@ class LoginForm extends Component {
     handleChange = ({ currentTarget: input }) => {
         const error = { ...this.state.error }; //copy error in state
         const errorMessage = this.validateProperty(input); // pass the input(input tage) to another function
-        if (errorMessage) error[input.name] = errorMessage;
-        else delete error[input.name];
+        if (errorMessage) error[input.name] = errorMessage; // set the property of error according to input.name, to errorMessage.
+        else delete error[input.name];// if there is no errorMessage, delete the property of error according to input.name 
 
 
         const account = { ...this.state.account };
