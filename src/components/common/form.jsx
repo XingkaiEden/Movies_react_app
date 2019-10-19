@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import joi from 'joi-browser';
+import Input from './input';
 
 class Form extends Component {
     state = {
@@ -57,6 +58,23 @@ class Form extends Component {
         return error ? error.details[0].message : null; // I forgot ".message" here cause error
 
     };
+    renderButton(label) {
+        return (<button
+            disabled={this.validate()}
+            type={label}
+            className="btn btn-primary">Login</button>);
+    };
+    renderInput(name, label, type = "text") {
+        const { data, error } = this.state;
+        return (<Input
+            type={type}
+            name={name}
+            label={label}
+            value={data[name]}
+            onChange={this.handleChange}
+            error={error[name]}
+        />);
+    }
 }
 
 export default Form;
