@@ -5,7 +5,7 @@ import Rentals from "./components/rentals";
 import NavBar from './components/common/navBar';
 import NotFound from "./components/common/notFound";
 import MovieForm from "./components/movieForm";
-import LoginForm from "./components/common/loginForm";
+import LoginForm from "./components/loginForm";
 
 
 import "./App.css";
