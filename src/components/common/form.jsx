@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Joi from 'joi-browser';
 import Input from './input';
 import SelectInput from './selectInput';
+import SearchBar from "./searchBar";
 
 
 class Form extends Component {
@@ -87,6 +88,21 @@ class Form extends Component {
       error={error[name]}
     />);
   };
+
+  renderSearchBar(name, label) {
+    const { data, error } = this.state;
+    return (<SearchBar
+      name={name}
+      label={label}
+      value={data[name]}
+      onChange={this.handleChange}
+      error={error[name]}
+    />);
+  };
+
+
+
+
 
 
 }
