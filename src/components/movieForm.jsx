@@ -7,20 +7,21 @@ import { getGenres } from "../services/fakeGenreService";
 
 class MovieForm extends Form {
     state = {
-        data: { name: "", genreId: '', numberInStock: '', dailyRentalRate: "" },
-        genre: [],
+        data: { title: "", genreId: '', numberInStock: '', dailyRentalRate: "" },
+        genres: [],
         error: {}
-    }
+    };
     schema = {
-        name: Joi.string().required().label("Title"),
-        genre: Joi.string().required().label("Genre"),
+        _id: Joi.string(),
+        title: Joi.string().required().label("Title"),
+        genreId: Joi.string().required().label("Genre"),
         numberInStock: Joi.number().required().min(0).max(100).label("Number In Stock"),
         dailyRentalRate: Joi.number().required().min(0).max(10).label("Rate"),
 
     };
     componentDidMount() {
-        const genre = getGenres();
-        this.setState({ genre });
+        const genres = getGenres();
+        this.setState({ genres });
 
         const movieId = this.props.match.params.id;
         if (movieId === "new") return;
@@ -38,7 +39,7 @@ class MovieForm extends Form {
     mapToViewModel = movie => {
         return {
             _id: movie._id,
-            name: movie.title,
+            title: movie.title,
             genreId: movie.genre._id,
             numberInStock: movie.numberInStock,
             dailyRentalRate: movie.dailyRentalRate
@@ -48,7 +49,7 @@ class MovieForm extends Form {
     doSubmit = () => {
         // console.log(this.state.data) //test
         saveMovie(this.state.data);
-        this.props.history.push('/');
+        this.props.history.push('/movies');
         // console.log(this.state.data)
 
     }
@@ -59,9 +60,9 @@ class MovieForm extends Form {
             <div>
                 <h1>Movie Form </h1>
                 <form onSubmit={this.handleSubmit}>
-                    {this.renderInput("name", "Title")}
 
-                    {this.renderSelectInput("genre", "Gnere", this.state.genre)}
+                    {this.renderInput("title", "Title")}
+                    {this.renderSelectInput("genreId", "Gnere", this.state.genres)}
                     {this.renderInput("numberInStock", "Number in Stock", "number")}
                     {this.renderInput("dailyRentalRate", "Rate")}
                     {this.renderButton("Save")}

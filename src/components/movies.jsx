@@ -87,8 +87,9 @@ class Movies extends Component {
           />
         </div>
         <div className="col">
+
           <Link className="btn btn-primary" to="/movies/new">New Movie</Link>
-          <p>Showing {totalCount} movies in the database.</p>
+          <p>Showing {totalCount}{console.log(this.state.movies)} movies in the database.</p>
           <MoviesTable
             movies={movies}
             sortColumn={sortColumn}

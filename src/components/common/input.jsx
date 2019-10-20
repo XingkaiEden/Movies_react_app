@@ -7,7 +7,7 @@ const Input = ({ name, label, error, ...rest }) => {
             <input
                 {...rest}
                 placeholder={label}
-                id={name} name={name}
+                name={name} id={name}
                 className="form-control"
 
             />
