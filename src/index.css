@@ -10,3 +10,6 @@ body {
 .clickable {
   cursor: pointer;
 }
+.btn{
+  margin-bottom: 20px;
+}

@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import joi from 'joi-browser';
+import Joi from 'joi-browser';
 import Input from './input';
+import SelectInput from './selectInput';
+
 
 class Form extends Component {
     state = {
         data: {},
-        errors: {}
+        error: {}
     }
     handleChange = ({ currentTarget: input }) => {
         const error = { ...this.state.error }; //copy error in state
@@ -22,7 +24,6 @@ class Form extends Component {
         e.preventDefault();
 
         const error = this.validate();
-        console.log(error);
         this.setState({ error: error || {} }) // if error === null, then error = {}
         if (error) return;
         this.doSubmit();
@@ -30,10 +31,10 @@ class Form extends Component {
     };
     validate = () => {
         const option = { abortEarly: false };
-        const result = joi.validate(this.state.data, this.schema, option);
-        // joi.validate([object we want to validate], [validation schema],{abortEarly})
+        const result = Joi.validate(this.state.data, this.schema, option);
+        // Joi.validate([object we want to validate], [validation schema],{abortEarly})
         if (!result.error) return null; //if no error, return null
-
+        console.log(result)
         const error = {}; // set error object in state
         //iterate the "details" array to get output
         result.error.details.map(item =>
@@ -41,11 +42,11 @@ class Form extends Component {
             //item.path[0] gives the property name of error, and item.message gives the error message
         );
 
-        return error;
+        return result.error;
 
     };
     validateProperty = ({ name, value }) => {
-        //since we can't just do "joi.validate(this.state.data, this.schema);" 
+        //since we can't just do "Joi.validate(this.state.data, this.schema);" 
         // it gonna validate the entire form. but we want just validate single field
         // first, we need to extract the single field from state and schema
         // computed property method is used for easier way implement
@@ -54,15 +55,16 @@ class Form extends Component {
 
         const obj = { [name]: value }; // this is a computed property
         const schema = { [name]: this.schema[name] };
-        const { error } = joi.validate(obj, schema);
+        const { error } = Joi.validate(obj, schema);
         return error ? error.details[0].message : null; // I forgot ".message" here cause error
 
     };
+
     renderButton(label) {
         return (<button
             disabled={this.validate()}
-            type={label}
-            className="btn btn-primary">Login</button>);
+
+            className="btn btn-primary">{label}</button>);
     };
     renderInput(name, label, type = "text") {
         const { data, error } = this.state;
@@ -74,7 +76,20 @@ class Form extends Component {
             onChange={this.handleChange}
             error={error[name]}
         />);
-    }
+    };
+    renderSelectInput(name, label, options) {
+        const { data, error } = this.state;
+        return (<SelectInput
+            options={options}
+            name={name}
+            label={label}
+            value={data[name]}
+            onChange={this.handleChange}
+            error={error[name]}
+        />);
+    };
+
+
 }
 
 export default Form;
