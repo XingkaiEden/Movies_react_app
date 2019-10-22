@@ -19,17 +19,28 @@ class MovieForm extends Form {
         dailyRentalRate: Joi.number().required().min(0).max(10).label("Rate"),
 
     };
-    async componentDidMount() {
+    async  populateGenres() {
         const { data: genres } = await getGenres();
         this.setState({ genres });
+    };
+    async populateMovies() {
+        try {
+            const movieId = this.props.match.params.id;
+            if (movieId === "new") return;
 
-        const movieId = this.props.match.params.id;
-        if (movieId === "new") return;
+            const { data: movie } = await getMovie(movieId);
+            this.setState({ data: this.mapToViewModel(movie) });
+        } catch (error) {
+            if (error.response && error.response.status === 404)
+                this.props.history.replace("/not-found");
+        }
+    };
+    componentDidMount() {
+        // IDK if i need another await & async here
+        this.populateGenres();
+        this.populateMovies();
 
-        const { data: movie } = await getMovie(movieId);
-        if (!movie) return this.props.history.replace("/not-found");
 
-        this.setState({ data: this.mapToViewModel(movie) });
         //reason not sign movie directly is server is designed for genral data, you have to convert
         // it into your current page
         //otherwise, you will get error message:"changing controlled to uncontrolled"
