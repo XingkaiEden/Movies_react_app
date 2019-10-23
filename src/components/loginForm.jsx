@@ -1,6 +1,8 @@
 import React from 'react';
 import joi from 'joi-browser';
 import Form from './common/form';
+import { login } from "../services/authService";
+
 
 class LoginForm extends Form {
     state = {
@@ -13,10 +15,23 @@ class LoginForm extends Form {
     }
 
 
-    doSubmit = () => { // when submit, deal server in here
-        //call the server
-        console.log("submit");
-    }
+    doSubmit = async () => { // when submit, deal server in here
+        try {
+            const data = this.state.data;
+            const { data: jwt } = await login(data.username, data.password);
+            //posted the entered username and password into server, then
+            // store the json web token(jwt) into localstorage
+            localStorage.setItem("token", jwt);
+            this.props.history.push("/");
+        } catch (ex) {
+            if (ex.response && ex.response.status === 400) {
+                const errors = { ...this.state.error };
+                errors.username = ex.response.data;
+                this.setState({ error: errors });
+            }
+        }
+
+    };
 
 
     render() {
