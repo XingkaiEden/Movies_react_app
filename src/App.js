@@ -19,7 +19,7 @@ import "react-toastify/dist/ReactToastify.css";
 class App extends Component {
   state = {};
   componentDidMount() {
-    const user = auth.getJWT();
+    const user = auth.getCurrentUserJWT();
     this.setState({ user })
   }
   render() {
