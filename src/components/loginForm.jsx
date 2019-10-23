@@ -22,7 +22,8 @@ class LoginForm extends Form {
             //posted the entered username and password into server, then
             // store the json web token(jwt) into localstorage
             localStorage.setItem("token", jwt);
-            this.props.history.push("/");
+            window.location = ("/"); //refresh page fully
+            // this.props.history.push("/");
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
                 const errors = { ...this.state.error };
