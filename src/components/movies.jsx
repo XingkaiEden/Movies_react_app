@@ -114,6 +114,7 @@ class Movies extends Component {
             onSearch={this.handleSearch}
           ></SearchBar>
           <MoviesTable
+
             movies={movies}
             sortColumn={sortColumn}
             onLike={this.handleLike}
