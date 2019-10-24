@@ -9,7 +9,12 @@ const ProtectedRoute = ({ path, component: Component, render, ...rest }) => {
 
             render={props => {
 
-                if (!auth.getCurrentUserJWT()) return <Redirect to="/login" />;
+                if (!auth.getCurrentUserJWT()) return <Redirect to={
+                    {
+                        pathname: "/login",
+                        state: { from: props.location }
+                    }
+                } />;
                 else return Component ? <Component {...props} /> : render(props);
             }
             } />

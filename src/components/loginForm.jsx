@@ -2,6 +2,7 @@ import React from 'react';
 import joi from 'joi-browser';
 import Form from './common/form';
 import auth from "../services/authService";
+import { Redirect } from "react-router-dom";
 
 
 
@@ -24,7 +25,8 @@ class LoginForm extends Form {
             //posted the entered username and password into server, then
             // store the json web token(jwt) into localstorage
             await auth.login(data.username, data.password);
-            window.location = ("/"); //refresh page fully
+            const { state } = this.props.location;
+            window.location = state ? state.from.pathname : "/"; //refresh page fully
             // this.props.history.push("/");
         } catch (ex) {
             if (ex.response && ex.response.status === 400) {
@@ -38,6 +40,7 @@ class LoginForm extends Form {
 
 
     render() {
+        if (auth.getCurrentUserJWT()) return <Redirect to="/" />
 
         return (
             <div>
