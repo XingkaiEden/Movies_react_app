@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 //but this raise another problem: Bi-directional Dependencies: like this "http"->"auth", "http"<-"auth";
 //first, we gonna determine which is the core module: HTTP, instead to ask auth to give us something, we can 
 //let it to push something to us
-
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 axios.interceptors.response.use(null, error => {
     const expectedError = error.response && error.response.status >= 400 && error.response.status < 500;
 

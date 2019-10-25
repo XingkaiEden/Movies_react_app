@@ -10,6 +10,7 @@ import _ from "lodash";
 import SearchBar from "./common/searchBar";
 import { toast } from "react-toastify";
 
+console.log("development Environment:", process.env.REACT_APP_NAME)
 class Movies extends Component {
   state = {
     movies: [],
@@ -93,7 +94,7 @@ class Movies extends Component {
     const { length: count } = this.state.movies;
     const { pageSize, currentPage, sortColumn, searchQuery } = this.state;
 
-    if (count === 0) return <p>There are no movies in the database.</p>;
+
 
     const { totalCount, data: movies } = this.getPagedData();
     const { user } = this.props;
