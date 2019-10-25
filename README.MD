@@ -6,3 +6,7 @@ This is a react app
 Admin account: 
   admin@admin.com / 123456
 Use the admin account for test purpose only, please.
+
+
+This app is host on Heroku: https://pure-falls-28840.herokuapp.com/ with backend
+database: MongoDB
