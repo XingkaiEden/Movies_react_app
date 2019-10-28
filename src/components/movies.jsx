@@ -10,7 +10,6 @@ import _ from "lodash";
 import SearchBar from "./common/searchBar";
 import { toast } from "react-toastify";
 
-console.log("development Environment:", process.env.REACT_APP_NAME)
 class Movies extends Component {
   state = {
     movies: [],
@@ -91,7 +90,7 @@ class Movies extends Component {
   };
 
   render() {
-    const { length: count } = this.state.movies;
+
     const { pageSize, currentPage, sortColumn, searchQuery } = this.state;
 
 
